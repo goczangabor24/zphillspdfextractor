@@ -6,16 +6,11 @@ import streamlit as st
 from pypdf import PdfReader, PdfWriter
 
 
-def sanitize_name(filename: str) -> str:
-    stem = Path(filename).stem
-    safe = "".join(c if c.isalnum() or c in ("-", "_") else "_" for c in stem).strip("_")
-    return safe or "document"
 
 
+st.set_page_config(page_title="PDF First Page Extractor", page_icon="📄", layout="centered")
 
-st.set_page_config(page_title="Hill's CMR Extractor", page_icon="📄", layout="centered")
-
-st.title("📄 Hill's CMR Extractor")
+st.title("📄 PDF First Page Extractor")
 st.write(
     "Upload one or more PDF files. The app will extract only the first page from each file and package the results into a ZIP for download."
 )
@@ -55,6 +50,11 @@ if uploaded_files:
         )
 
 
+def sanitize_name(filename: str) -> str:
+    stem = Path(filename).stem
+    safe = "".join(c if c.isalnum() or c in ("-", "_") else "_" for c in stem).strip("_")
+    return safe or "document"
+
 
 if uploaded_files:
     extracted_items: list[tuple[str, bytes]] = []
@@ -80,7 +80,7 @@ if uploaded_files:
                 suffix_key = f"suffix_{sanitize_name(uploaded_file.name)}_{uploaded_files.index(uploaded_file)}"
                 suffix = suffix_values.get(suffix_key, "").strip()
                 original_stem = Path(uploaded_file.name).stem
-                final_stem = f"{original_stem}{suffix}" if suffix else original_stem
+                final_stem = f"{original_stem}_{suffix}" if suffix else original_stem
                 output_name = f"{sanitize_name(final_stem)}.pdf"
                 extracted_items.append((output_name, output_buffer.getvalue()))
 
