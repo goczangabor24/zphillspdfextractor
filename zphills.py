@@ -6,6 +6,13 @@ import streamlit as st
 from pypdf import PdfReader, PdfWriter
 
 
+def sanitize_name(filename: str) -> str:
+    stem = Path(filename).stem
+    safe = "".join(c if c.isalnum() or c in ("-", "_") else "_" for c in stem).strip("_")
+    return safe or "document"
+
+
+
 st.set_page_config(page_title="Hill's CMR Extractor", page_icon="📄", layout="centered")
 
 st.title("📄 Hill's CMR Extractor")
@@ -47,11 +54,6 @@ if uploaded_files:
             label_visibility="collapsed",
         )
 
-
-def sanitize_name(filename: str) -> str:
-    stem = Path(filename).stem
-    safe = "".join(c if c.isalnum() or c in ("-", "_") else "_" for c in stem).strip("_")
-    return safe or "document"
 
 
 if uploaded_files:
