@@ -3,6 +3,14 @@ import zipfile
 from pathlib import Path
 
 import streamlit as st
+
+# --- helper functions ---
+def sanitize_name(filename: str) -> str:
+    stem = Path(filename).stem
+    safe = "".join(c if c.isalnum() or c in ("-", "_") else "_" for c in stem).strip("_")
+    return safe or "document"
+
+
 from pypdf import PdfReader, PdfWriter
 
 
